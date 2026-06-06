@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "451259000015",
+    "project_id": "gid-mangystau",
+    "storage_bucket": "gid-mangystau.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451259000015:android:4fe12d85fa3b716ddd83ba",
+        "android_client_info": {
+          "package_name": "kz.mangid.gid_mangystau"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451259000015-fpts3p3h3tuegh3losn3lm4h7m4m5hi7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kz.mangid.gid_mangystau",
+            "certificate_hash": "c870aad4926d6c9b04abdca4d20b265be1ec3c02"
+          }
+        },
+        {
+          "client_id": "451259000015-i9q7b65vej18q1i0tj5u22nkjt1ggcug.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTHyN9AjvfLgds65uueqO2O7Fg_56mCI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451259000015-i9q7b65vej18q1i0tj5u22nkjt1ggcug.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

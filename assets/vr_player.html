@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>VR Tour</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; width: 100vw; height: 100vh; }
+    a-scene { width: 100vw; height: 100vh; }
+    #hint {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-family: sans-serif;
+      font-size: 13px;
+      pointer-events: none;
+      z-index: 999;
+      transition: opacity 1s;
+    }
+  </style>
+</head>
+<body>
+  <div id="hint">📱 Наклоняйте телефон чтобы осмотреться</div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+    loading-screen="enabled: false"
+  >
+    <a-assets>
+      <video id="vr-video"
+        src="VIDEO_URL_PLACEHOLDER"
+        crossorigin="anonymous"
+        autoplay
+        loop
+        muted
+        playsinline
+        webkit-playsinline>
+      </video>
+    </a-assets>
+
+    <a-videosphere
+      src="#vr-video"
+      rotation="0 -90 0"
+      radius="100">
+    </a-videosphere>
+
+    <a-camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: true">
+    </a-camera>
+  </a-scene>
+
+  <script>
+    // Скрыть подсказку через 4 секунды
+    setTimeout(() => {
+      const hint = document.getElementById('hint');
+      if (hint) hint.style.opacity = '0';
+    }, 4000);
+
+    // Автоплей после взаимодействия
+    document.addEventListener('click', () => {
+      const video = document.getElementById('vr-video');
+      if (video && video.paused) video.play();
+    });
+
+    // Запрос разрешения на гироскоп (iOS 13+)
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      document.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission().catch(() => {});
+      }, { once: true });
+    }
+  </script>
+</body>
+</html>
