@@ -26,7 +26,14 @@ class _BookingCreateScreenState extends ConsumerState<BookingCreateScreen> {
 
     ref.listen(bookingCreateProvider, (prev, next) {
       // Срабатывает только после завершения загрузки (не при первом рендере)
-      if (prev?.isLoading == true && next.hasValue && !next.isLoading) {
+      if (prev?.isLoading == true && next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ошибка: ${next.error}'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      } else if (prev?.isLoading == true && next.hasValue && !next.isLoading) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Бронирование отправлено!'),
@@ -34,14 +41,6 @@ class _BookingCreateScreenState extends ConsumerState<BookingCreateScreen> {
           ),
         );
         context.go('/my-bookings');
-      }
-      if (next.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Ошибка: ${next.error}'),
-            backgroundColor: AppColors.error,
-          ),
-        );
       }
     });
 

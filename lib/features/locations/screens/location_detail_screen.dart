@@ -6,7 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/vr_video_player.dart';
 import '../../tours/models/guide.dart';
+import '../../tours/models/tour.dart';
 import '../../tours/providers/guides_provider.dart';
+import '../../favorites/providers/favorites_provider.dart';
 import '../providers/locations_provider.dart';
 
 class LocationDetailScreen extends ConsumerWidget {
@@ -44,21 +46,37 @@ class LocationDetailScreen extends ConsumerWidget {
                   ),
 
                   SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        // VR баннер — на самом верху на всю ширину
-                        if (location.youtube360Url != null)
-                          VrVideoBanner(
-                            videoUrl: location.youtube360Url!,
-                            thumbnailUrl: location.photoUrl,
-                          )
-                        else if (location.photoUrl != null)
-                          CachedNetworkImage(
-                            imageUrl: location.photoUrl!,
-                            width: double.infinity,
-                            height: 220,
-                            fit: BoxFit.cover,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // VR баннер — на самом верху на всю ширину
+                            if (location.youtube360Url != null)
+                              VrVideoBanner(
+                                videoUrl: location.youtube360Url!,
+                                thumbnailUrl: location.photoUrl,
+                              )
+                            else if (location.photoUrl != null)
+                              CachedNetworkImage(
+                                imageUrl: location.photoUrl!,
+                                width: double.infinity,
+                                height: 220,
+                                fit: BoxFit.cover,
+                              ),
+                          ],
+                        ),
+                        if (location.youtube360Url == null)
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: guidesAsync.maybeWhen(
+                              data: (items) => items.isEmpty
+                                  ? const SizedBox()
+                                  : _LocationFavoriteButton(
+                                      tourId: items.first.tour.id),
+                              orElse: () => const SizedBox(),
+                            ),
                           ),
                       ],
                     ),
@@ -150,13 +168,13 @@ class LocationDetailScreen extends ConsumerWidget {
   }
 }
 
-class _GuideCard extends StatelessWidget {
+class _GuideCard extends ConsumerWidget {
   final GuideModel guide;
-  final Map<String, dynamic> tour;
+  final TourModel tour;
   const _GuideCard({required this.guide, required this.tour});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -244,7 +262,7 @@ class _GuideCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () => context.push('/book/${tour['id']}'),
+                onPressed: () => context.push('/book/${tour.id}'),
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
@@ -260,4 +278,24 @@ class _GuideCard extends StatelessWidget {
   }
 }
 
+class _LocationFavoriteButton extends ConsumerWidget {
+  final String tourId;
+  const _LocationFavoriteButton({required this.tourId});
 
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favs = ref.watch(favoritesNotifierProvider).valueOrNull ?? {};
+    final isFav = favs.contains(tourId);
+    return CircleAvatar(
+      backgroundColor: Colors.black.withValues(alpha: 0.4),
+      child: IconButton(
+        icon: Icon(
+          isFav ? Icons.favorite : Icons.favorite_outline,
+          color: isFav ? Colors.red : Colors.white,
+        ),
+        onPressed: () =>
+            ref.read(favoritesNotifierProvider.notifier).toggle(tourId),
+      ),
+    );
+  }
+}

@@ -67,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 22)),
-                      Text('Открывай Казахстан по-новому',
+                      Text('Открывай Мангистау по-новому',
                           style:
                               TextStyle(color: Colors.white70, fontSize: 11)),
                     ],

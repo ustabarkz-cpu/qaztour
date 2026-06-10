@@ -1,7 +1,7 @@
 class TourModel {
   final String id;
   final String locationId;
-  final String guideId;
+  final String? guideId;
   final String title;
   final String? description;
   final int pricePerPerson;
@@ -36,7 +36,7 @@ class TourModel {
   factory TourModel.fromMap(Map<String, dynamic> map) => TourModel(
         id: map['id'] as String,
         locationId: map['location_id'] as String,
-        guideId: map['guide_id'] as String,
+        guideId: map['guide_id'] as String?,
         title: map['title'] as String,
         description: map['description'] as String?,
         pricePerPerson: map['price_per_person'] as int,

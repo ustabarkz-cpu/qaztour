@@ -39,7 +39,7 @@ class LoginScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Открывай Казахстан по-новому.',
+                'Открывай Мангистау по-новому.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.primary,
