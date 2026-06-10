@@ -31,7 +31,21 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+android/build/
+android/app/build/
 /coverage/
+
+# React admin app
+admin/node_modules/
+admin/dist/
+
+# Large local video assets (not for git — host externally)
+assets/videos/
+
+# Misc local files
+*.pptx
+~$*.pptx
+qaztour_kazakh.html
 
 # Symbolication related
 app.*.symbols

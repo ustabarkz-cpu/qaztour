@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../providers/auth_provider.dart';
 
@@ -18,8 +19,8 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
     if (_selectedRole == null) return;
     setState(() => _loading = true);
     await ref.read(authNotifierProvider.notifier).setRole(_selectedRole!);
-    // Обновляем профиль — роутер среагирует и перенаправит
     ref.invalidate(profileProvider);
+    if (mounted) context.go('/home');
   }
 
   @override

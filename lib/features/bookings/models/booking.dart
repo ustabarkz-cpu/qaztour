@@ -4,7 +4,7 @@ class BookingModel {
   final String tourId;
   final DateTime date;
   final int peopleCount;
-  final String status; // pending | accepted | rejected
+  final String status; // pending | accepted | rejected | cancelled
   final String? tourTitle;
   final int? tourPrice;
   final String? locationName;
@@ -39,4 +39,5 @@ class BookingModel {
   bool get isPending => status == 'pending';
   bool get isAccepted => status == 'accepted';
   bool get isRejected => status == 'rejected';
+  bool get isCancelled => status == 'cancelled';
 }

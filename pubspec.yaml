@@ -43,6 +43,9 @@ dependencies:
   cached_network_image: ^3.4.1
   cupertino_icons: ^1.0.8
 
+  # Sensors
+  sensors_plus: ^6.1.0
+
   # Utils
   shared_preferences: ^2.5.3
   url_launcher: ^6.3.1

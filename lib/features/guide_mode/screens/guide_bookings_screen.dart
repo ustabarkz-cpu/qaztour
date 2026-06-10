@@ -14,8 +14,9 @@ class GuideBookingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: AppColors.primary,
           title: const Text('Заявки на туры',
-              style: TextStyle(fontWeight: FontWeight.bold))),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
       body: bookingsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorView(message: e.toString()),

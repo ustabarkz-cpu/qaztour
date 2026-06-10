@@ -41,16 +41,54 @@ class MyBookingsScreen extends ConsumerWidget {
   }
 }
 
-class _BookingCard extends StatelessWidget {
+class _BookingCard extends ConsumerWidget {
   final BookingModel booking;
 
   const _BookingCard({required this.booking});
 
+  Future<void> _confirmCancel(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Отменить бронирование?'),
+        content: const Text('Заявка будет помечена как отменённая. Это действие нельзя отменить.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Назад'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Отменить заявку',
+                style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+
+    await ref.read(bookingCancelProvider.notifier).cancel(booking.id);
+
+    if (!context.mounted) return;
+    final state = ref.read(bookingCancelProvider);
+    if (state.hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка: ${state.error}')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Бронирование отменено')),
+      );
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final statusColor = booking.isAccepted
         ? AppColors.success
-        : booking.isRejected
+        : booking.isRejected || booking.isCancelled
             ? AppColors.error
             : Colors.orange;
 
@@ -58,7 +96,12 @@ class _BookingCard extends StatelessWidget {
         ? 'Подтверждено'
         : booking.isRejected
             ? 'Отклонено'
-            : 'Ожидает ответа';
+            : booking.isCancelled
+                ? 'Отменено'
+                : 'Ожидает ответа';
+
+    final canCancel = booking.isPending;
+    final cancelState = ref.watch(bookingCancelProvider);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -126,6 +169,30 @@ class _BookingCard extends StatelessWidget {
                 '${(booking.tourPrice! * booking.peopleCount)} ₸',
                 style: const TextStyle(
                     color: AppColors.primary, fontWeight: FontWeight.bold),
+              ),
+            ],
+            if (canCancel) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: cancelState.isLoading
+                      ? null
+                      : () => _confirmCancel(context, ref),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    side: const BorderSide(color: AppColors.error),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: cancelState.isLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Отменить бронирование'),
+                ),
               ),
             ],
           ],
