@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/vr_video_player.dart';
+import '../../tours/models/guide.dart';
 import '../../tours/providers/guides_provider.dart';
 import '../providers/locations_provider.dart';
 
@@ -150,8 +151,8 @@ class LocationDetailScreen extends ConsumerWidget {
 }
 
 class _GuideCard extends StatelessWidget {
-  final guide;
-  final tour;
+  final GuideModel guide;
+  final Map<String, dynamic> tour;
   const _GuideCard({required this.guide, required this.tour});
 
   @override
@@ -222,7 +223,7 @@ class _GuideCard extends StatelessWidget {
               const SizedBox(height: 10),
               Wrap(
                 spacing: 6,
-                children: (guide.languages as List<String>)
+                children: guide.languages
                     .map((l) => Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
@@ -243,7 +244,7 @@ class _GuideCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () => context.push('/book/${tour.id}'),
+                onPressed: () => context.push('/book/${tour['id']}'),
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),

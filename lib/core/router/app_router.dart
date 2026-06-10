@@ -6,7 +6,6 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/role_select_screen.dart';
 import '../../features/bookings/screens/booking_create_screen.dart';
 import '../../features/bookings/screens/my_bookings_screen.dart';
-import '../../features/tours/screens/guide_list_screen.dart';
 import '../../features/favorites/screens/favorites_screen.dart';
 import '../../features/guide_mode/screens/guide_bookings_screen.dart';
 import '../../features/guide_mode/screens/guide_tours_screen.dart';
@@ -99,13 +98,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/my-bookings',
         builder: (_, __) => const MyBookingsScreen(),
-      ),
-      GoRoute(
-        path: '/guides/:locationId',
-        builder: (_, state) => GuideListScreen(
-          locationId: state.pathParameters['locationId']!,
-          locationName: state.uri.queryParameters['name'] ?? '',
-        ),
       ),
     ],
   );

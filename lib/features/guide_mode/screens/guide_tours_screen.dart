@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../tours/models/tour.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../providers/guide_tours_provider.dart';
 
@@ -39,7 +40,7 @@ class GuideToursScreen extends ConsumerWidget {
 }
 
 class _TourCard extends StatelessWidget {
-  final tour;
+  final TourModel tour;
   const _TourCard({required this.tour});
 
   @override
