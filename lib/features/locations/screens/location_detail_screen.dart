@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/vr_video_player.dart';
 import '../../tours/models/guide.dart';
+import '../../tours/models/review.dart';
 import '../../tours/models/tour.dart';
 import '../../tours/providers/guides_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -202,7 +203,9 @@ class _GuideCard extends ConsumerWidget {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 15)),
                       const SizedBox(height: 2),
-                      Row(
+                      InkWell(
+                        onTap: () => _showReviewsSheet(context, guide),
+                        child: Row(
                         children: [
                           const Icon(Icons.star_rounded,
                               color: Colors.amber, size: 15),
@@ -212,12 +215,15 @@ class _GuideCard extends ConsumerWidget {
                           const SizedBox(width: 4),
                           Text('(${guide.reviewsCount})',
                               style: const TextStyle(
-                                  color: AppColors.textSecondary, fontSize: 12)),
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline)),
                           const SizedBox(width: 8),
                           Text('${guide.experienceYears} лет опыта',
                               style: const TextStyle(
                                   color: AppColors.textSecondary, fontSize: 12)),
                         ],
+                        ),
                       ),
                     ],
                   ),
@@ -296,6 +302,110 @@ class _LocationFavoriteButton extends ConsumerWidget {
         onPressed: () =>
             ref.read(favoritesNotifierProvider.notifier).toggle(tourId),
       ),
+    );
+  }
+}
+
+void _showReviewsSheet(BuildContext context, GuideModel guide) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    builder: (_) => _ReviewsSheet(guide: guide),
+  );
+}
+
+class _ReviewsSheet extends ConsumerWidget {
+  final GuideModel guide;
+  const _ReviewsSheet({required this.guide});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reviewsAsync = ref.watch(reviewsByGuideProvider(guide.id));
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.3,
+      maxChildSize: 0.9,
+      expand: false,
+      builder: (context, scrollController) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text('Отзывы о гиде ${guide.name}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 17)),
+                ),
+                const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                const SizedBox(width: 3),
+                Text(guide.rating.toStringAsFixed(1),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: reviewsAsync.when(
+                loading: () =>
+                    const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: Text('Ошибка: $e')),
+                data: (reviews) {
+                  if (reviews.isEmpty) {
+                    return const Center(child: Text('Пока нет отзывов'));
+                  }
+                  return ListView.separated(
+                    controller: scrollController,
+                    itemCount: reviews.length,
+                    separatorBuilder: (_, __) => const Divider(height: 24),
+                    itemBuilder: (_, i) => _ReviewTile(review: reviews[i]),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReviewTile extends StatelessWidget {
+  final ReviewModel review;
+  const _ReviewTile({required this.review});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(review.touristName ?? 'Турист',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            const Spacer(),
+            Row(
+              children: List.generate(
+                5,
+                (i) => Icon(
+                  i < review.rating ? Icons.star_rounded : Icons.star_border_rounded,
+                  color: Colors.amber,
+                  size: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (review.comment != null && review.comment!.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Text(review.comment!,
+              style: const TextStyle(
+                  color: AppColors.textSecondary, height: 1.4)),
+        ],
+      ],
     );
   }
 }

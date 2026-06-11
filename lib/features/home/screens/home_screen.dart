@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../locations/models/location.dart';
 import '../../locations/providers/locations_provider.dart';
+import '../widgets/ai_assistant_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -109,6 +110,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
+
+              // ─── AI Travel Assistant ───
+              if (_search.isEmpty) ...[
+                const SliverToBoxAdapter(
+                  child: AiAssistantCard(),
+                ),
+              ],
 
               // ─── Популярные (горизонтальный скролл) ───
               if (_search.isEmpty) ...[

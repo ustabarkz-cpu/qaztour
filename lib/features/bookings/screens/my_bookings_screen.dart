@@ -19,7 +19,7 @@ class MyBookingsScreen extends ConsumerWidget {
           iconTheme: const IconThemeData(color: Colors.white),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => context.go('/profile'),
+            onPressed: () => context.go('/home'),
           ),
           title: const Text('Мои бронирования',
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),

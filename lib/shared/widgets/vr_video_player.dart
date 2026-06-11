@@ -206,7 +206,7 @@ class _VrVideoFullscreenState extends State<VrVideoFullscreen> {
       if (last == null) return;
 
       final dt = now.difference(last).inMicroseconds / 1e6;
-      _yaw   -= e.z * dt * (180 / math.pi);
+      _yaw   += e.z * dt * (180 / math.pi);
       _pitch += e.x * dt * (180 / math.pi);
       _pitch  = _pitch.clamp(-85.0, 85.0);
     });
